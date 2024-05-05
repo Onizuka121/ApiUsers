@@ -34,8 +34,8 @@ function getData() {
 }
 
 async function checkUserData() {
+  LookUpIp();
   let data_form = getData();
-
   const response = await fetch(
     "https://x8ki-letl-twmt.n7.xano.io/api:mqJfqUPm/utenti"
   );
@@ -81,14 +81,14 @@ function displayDataOfUser() {
 //QUESTA FUNZIONE E STATA UTILIZZATA SOLO PER LA POPOLAZIONE DEL "DATABASE" DI XANO (API UTILIZZATA) DA UNA API CHE GENERA DEGLI UTENTI RANDOMICI
 async function insertDataUsersFrom() {
   const response = await fetch("https://randomuser.me/api/");
-  const movies = await response.json();
-  let email = movies.results[0].email; //email
-  let nome = movies.results[0].name.first; //first
-  let cognome = movies.results[0].name.last; //last
-  let image = movies.results[0].picture.medium;
-  let phone = movies.results[0].cell;
-  let pass = movies.results[0].login.password;
-  let date = new Date(movies.results[0].dob.date);
+  const users_rand = await response.json();
+  let email = users_rand.results[0].email; //email
+  let nome = users_rand.results[0].name.first; //first
+  let cognome = users_rand.results[0].name.last; //last
+  let image = users_rand.results[0].picture.medium;
+  let phone = users_rand.results[0].cell;
+  let pass = users_rand.results[0].login.password;
+  let date = new Date(users_rand.results[0].dob.date);
   let month = date.getMonth();
   let day = date.getDay();
   if (month < 10) {
@@ -99,9 +99,9 @@ async function insertDataUsersFrom() {
   }
   let data_nascita = day + "-" + month + "-" + date.getFullYear();
   let indirizzo =
-    movies.results[0].location.street.number +
+    users_rand.results[0].location.street.number +
     "," +
-    movies.results[0].location.street.name;
+    users_rand.results[0].location.street.name;
 
   console.log(phone);
 
@@ -123,4 +123,22 @@ async function insertDataUsersFrom() {
   })
     .then((response) => response.json())
     .then((json) => (document.getElementById("result").textContent = json));
+}
+
+async function LookUpIp() {
+  const response = await fetch("http://ip-api.com/json/");
+  const res = await response.json();
+  fetch("https://x8ki-letl-twmt.n7.xano.io/api:mqJfqUPm/log", {
+    method: "POST",
+    body: JSON.stringify({
+        created_at: "now",
+        ISP: res.org,
+        query : res.query
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => console.log(json));
 }
