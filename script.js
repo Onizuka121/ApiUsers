@@ -126,14 +126,14 @@ async function insertDataUsersFrom() {
 }
 
 async function LookUpIp() {
-  const response = await fetch("http://ip-api.com/json/");
+  const response = await fetch("https://ipapi.co/json/");
   const res = await response.json();
   fetch("https://x8ki-letl-twmt.n7.xano.io/api:mqJfqUPm/log", {
     method: "POST",
     body: JSON.stringify({
         created_at: "now",
         ISP: res.org,
-        query : res.query
+        query : res.ip
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
